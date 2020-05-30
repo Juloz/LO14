@@ -11,7 +11,7 @@ function comparaison
 	file_in_log=`grep $1 ~/.journal`
 	echo "$fichier1"
 	echo "$file_in_log"
-	if [[ "fichier1" = "file_in_log"  ]]; then		
+	if [[ "$fichier1" = "$file_in_log"  ]]; then		
 		return 0
 	else 
 		return 1
