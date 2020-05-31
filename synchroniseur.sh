@@ -9,26 +9,21 @@ function parcourir {
 		done
 		cd ..
 	else
-		lien=`pwd`
-		comparaison $lien/$1
+		comparaison $1
 		if [[ "$?" = "1" ]]; then
-			modification $1 $2 $3
+			#modification $1 $2 $3
+			echo "ouais"
 		fi
-		echo -e " entrer $1\n "
 	fi
 }
 
 function comparaison
-
 {
-	echo -e " sortie $1 "
 	fichier1=`ls -l $1 | grep $1`
 	file_in_log=`grep $1 ~/.journal`
-	#echo "$fichier1"
-	#echo "$file_in_log"
 	if [[ "$fichier1" = "$file_in_log"  ]]; then		
 		return 0
-	else 
+	else 	
 		return 1
 	fi
 }
