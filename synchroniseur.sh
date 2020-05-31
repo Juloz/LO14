@@ -11,10 +11,9 @@ function parcourir {
 	else
 		lien=`pwd`
 		comparaison $lien/$1
-		echo "$?"
-		#if [[ $? -eq 1 ]]; then
-		#	modifier $1 $2 $3  #$1, path arbre explorer, path autre arbre
-		#fi
+		if [[ "$?" = "1" ]]; then
+			modification $1 $2 $3
+		fi
 		echo -e " entrer $1\n "
 	fi
 }
