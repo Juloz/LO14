@@ -11,8 +11,7 @@ function parcourir {
 	else
 		comparaison $1
 		if [[ "$?" = "1" ]]; then
-			#modification $1 $2 $3
-			echo "ouais"
+			modification $1 $2 $3
 		fi
 	fi
 }
