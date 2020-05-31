@@ -10,14 +10,28 @@ function parcourir {
 		cd ..
 	else
 		lien=`pwd`
-		#comparaison $lien
-		#echo "$?"
+		comparaison $lien/$1
+		echo "$?"
 		#if [[ $? -eq 1 ]]; then
 		#	modifier $1 $2 $3 $4 #path$1, nom arbre explorer, path arbre explorer, path autre arbre
 		#fi
-		echo " $lien/$1 "
+		echo -e " entrer $lien/$1\n "
 	fi
-	
+}
+
+function comparaison
+
+{
+	echo -e " sortie $1 "
+	fichier1=`ls -l $1 | grep $1`
+	file_in_log=`grep $1 ~/.journal`
+	#echo "$fichier1"
+	#echo "$file_in_log"
+	if [[ "$fichier1" = "$file_in_log"  ]]; then		
+		return 0
+	else 
+		return 1
+	fi
 }
 
 
@@ -25,26 +39,26 @@ echo "entrer le nom du premier dossier a syncro"
 read DossA
 echo "entrer le nom du deuxieme dossier a syncro"
 read DossB
-pathA=`find /mnt/c/projet-bash-lo14 -type d -name $DossA` #voir pour les chemins
-pathB=`find /mnt/c/projet-bash-lo14 -type d -name $DossB`
+pathA=`find ~ -type d -name $DossA` #voir pour les chemins
+pathB=`find ~ -type d -name $DossB`
 
 while [[ -z $pathA ]]; do
 	echo "le premier dossier n'as pas été trouvé, merci de saisir a nouveau votre dossier"
 	read DossA
-	pathA=`find /mnt/c/projet-bash-lo14 -type d -name $DossA`
+	pathA=`find ~ -type d -name $DossA`
 done
 echo " premier trouvé"
 
 while [[ -z $pathB ]]; do
 	echo "le deuxieme dossier n'as pas été trouvé, merci de saisir a nouveau votre dossier"
 	read DossB
-	pathB=`find /mnt/c/projet-bash-lo14 -type d -name $DossB`
+	pathB=`find ~ -type d -name $DossB`
 done
 echo " deuxieme trouvé"
 #path$1, nom arbre explorer, path arbre explorer, path autre arbre
 
 if [[ ! -e .journal ]]; then
-	echo -e "aucun journal de synchronisation trouvé, choissisez  quel dossier syncroniser \n1 pour le premier dossier\n2 pour le deuxieme dossier"
+	echo -e "aucun journal de synchronisation trouvé, choissisez  quel dossier synchroniser \n1 pour le premier dossier\n2 pour le deuxieme dossier"
 	read choix
 	if [[ $choix = 1 ]]; then
 		rm -rf DossB
@@ -66,7 +80,7 @@ else
 	echo "le journal existe deja"
 	echo "$pathA"
 	echo "$pathB"
-	echo "DossA"
+	echo -e "DossA\n"
 	parcourir $pathA $pathA $pathB $DossA 
 	#parcourir $pathB $pathB $pathA $DossA 
 fi
