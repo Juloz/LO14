@@ -5,7 +5,7 @@ function parcourir {
 	if [[ -d $1 ]]; then
 		cd $1
 		for i in * ; do
-			parcourir $i $2 $3 $4
+			parcourir $i $2 $3 
 		done
 		cd ..
 	else
@@ -13,9 +13,9 @@ function parcourir {
 		comparaison $lien/$1
 		echo "$?"
 		#if [[ $? -eq 1 ]]; then
-		#	modifier $1 $2 $3 $4 #path$1, nom arbre explorer, path arbre explorer, path autre arbre
+		#	modifier $1 $2 $3  #$1, path arbre explorer, path autre arbre
 		#fi
-		echo -e " entrer $lien/$1\n "
+		echo -e " entrer $1\n "
 	fi
 }
 
@@ -81,8 +81,8 @@ else
 	echo "$pathA"
 	echo "$pathB"
 	echo -e "DossA\n"
-	parcourir $pathA $pathA $pathB $DossA 
-	#parcourir $pathB $pathB $pathA $DossA 
+	parcourir $pathA $pathA $pathB 
+	#parcourir $pathB $pathB $pathA 
 fi
 
 
