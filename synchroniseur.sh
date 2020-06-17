@@ -9,10 +9,10 @@ function parcourir {
 		done
 		cd ..
 	else
-		comparaison $1
-		if [[ "$?" = "1" ]]; then
+		#comparaison $1
+		#if [[ "$?" = "1" ]]; then
 			modification $1 $2 $3
-		fi
+		#fi
 	fi
 }
 
@@ -20,21 +20,27 @@ function comparaison
 {
 	fichier1=`ls -l $1 | grep $1`
 	file_in_log=`grep $1 ~/.journal`
-	if [[ "$fichier1" = "$file_in_log"  ]]; then		
+	if [[ "$fichier1" = "$file_in_log"  ]]; then	
 		return 0
 	else 	
 		return 1
 	fi
+
 }
 
 function modification
 {
 	file1=`find $2 -type f -name $1`
-	fichier1=`ls -l $file1 | grep $1 | sed "s~$file1~$1~"` 
+	fichier1=`ls -l $file1 | grep $1 | sed "s~$file1~$1~" | tr -d " "` 
 	file2=`find $3 -type f -name $1` #on cherche un fichier avec le nom identique dans l'autre repertoire
-	fichier2=`ls -l $file2 | grep $1  | sed "s~$file2~$1~"` 
+	fichier2=`ls -l $file2 | grep $1  | sed "s~$file2~$1~" | tr -d " "` 
 	file_in_log=`grep $1 ~/.journal` 
 	choix='0'
+	echo "file1 : $file1"
+	echo "file2 : $file2"
+	echo "fichier1 : $fichier1"
+	echo "fichier2 : $fichier2"
+	echo "file_in_log : $file_in_log"
 	if [[ "$fichier2" = '' ]]; then                        #le fichier n'existe pas dans le second arbre
 	 	if [[ "$fichier1" = "$file_in_log" ]]; then			#le fichier est déja dans les logs, et de manière identique, c'est donc qu'il a été supprimer dans l'autre arbre, il faut donc le supprimer
 	 		rm -f $file1
@@ -102,20 +108,20 @@ done
 echo " deuxieme dossier trouvé"
 #path$1, nom arbre explorer, path arbre explorer, path autre arbre
 
-if [[ ! -e .journal ]]; then
+if [[ ! -e ~/.journal ]]; then
 	echo -e "aucun journal de synchronisation trouvé, choissisez  quel dossier synchroniser \n1 pour le premier dossier\n2 pour le deuxieme dossier"
 	read choix
 	if [[ $choix = 1 ]]; then
-		rm -rf DossB
-		cp -pr DossA DossB
-		touch .journal
-		ls -lR DossA | grep ^- > .journal
+		rm -rf $DossB
+		cp -pr $DossA $DossB
+		touch ~/.journal
+		echo -e "$(ls -lR DossA  | grep ^- | tr -d " ")\n" >> ~/.journal
 		echo "Mise a niveau des dossiers et création du journal de synchronisation"
-	else #ajouter une condition
-		rm -rf DossA
-		cp -pr DossB DossA
-		touch .journal
-		ls -lR DossB | grep ^- > .journal
+	else 
+		rm -rf $DossAy
+		cp -pr $DossB $DossA
+		touch ~/.journal
+		echo -e "$(ls -lR DossA  | grep ^- | tr -d " ")\n" >> ~/.journal
 		echo "Mise a niveau des dossiers et création du journal de synchronisation"
 	fi
 else
