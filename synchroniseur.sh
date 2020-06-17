@@ -115,13 +115,13 @@ if [[ ! -e ~/.journal ]]; then
 		rm -rf $DossB
 		cp -pr $DossA $DossB
 		touch ~/.journal
-		echo -e "$(ls -lR DossA  | grep ^- | tr -d " ")\n" >> ~/.journal
+		echo -e "$(ls -lR $DossA  | grep ^- | tr -d " ")\n" >> ~/.journal
 		echo "Mise a niveau des dossiers et création du journal de synchronisation"
 	else 
-		rm -rf $DossAy
+		rm -rf $DossA
 		cp -pr $DossB $DossA
 		touch ~/.journal
-		echo -e "$(ls -lR DossA  | grep ^- | tr -d " ")\n" >> ~/.journal
+		echo -e "$(ls -lR $DossB  | grep ^- | tr -d " ")\n" >> ~/.journal
 		echo "Mise a niveau des dossiers et création du journal de synchronisation"
 	fi
 else
