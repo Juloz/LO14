@@ -1,14 +1,13 @@
 #!/bin/bash
 
-
 function parcourir {
-	if [[ -d $1 ]]; then
+	if [[ -d $1 ]]; then #si c'est un dossier, on rentre dans le dossier
 		cd $1
-		for i in * ; do
+		for i in * ; do #on parcourt tout les variables du dossier en appelant la fonction, c'est notre récursivité
 			parcourir $i $2 $3 
 		done
 		cd ..
-	else
+	else  #si c'est un fichier, on envoi a a la fonction modification
 		#comparaison $1
 		#if [[ "$?" = "1" ]]; then
 			modification $1 $2 $3
@@ -16,7 +15,7 @@ function parcourir {
 	fi
 }
 
-function comparaison
+function comparaison #inutile
 {
 	fichier1=`ls -l $1 | grep $1`
 	file_in_log=`grep $1 ~/.journal`
@@ -36,12 +35,17 @@ function modification
 	fichier2=`ls -l $file2 | grep $1  | sed "s~$file2~$1~" | tr -d " "` 
 	file_in_log=`grep $1 ~/.journal` 
 	choix='0'
+	echo "1 : $1"
+	echo "2 : $2"
 	echo "file1 : $file1"
 	echo "file2 : $file2"
 	echo "fichier1 : $fichier1"
 	echo "fichier2 : $fichier2"
 	echo "file_in_log : $file_in_log"
-	if [[ "$fichier2" = '' ]]; then                        #le fichier n'existe pas dans le second arbre
+	if [ "$fichier1" =  "$fichier2" ] && [ "$fichier1" = "$file_in_log" ]; then 
+		toto="0"
+		echo "toto"
+	elif [[ "$fichier2" = '' ]]; then                        #le fichier n'existe pas dans le second arbre
 	 	if [[ "$fichier1" = "$file_in_log" ]]; then			#le fichier est déja dans les logs, et de manière identique, c'est donc qu'il a été supprimer dans l'autre arbre, il faut donc le supprimer
 	 		rm -f $file1
 	 		sed -i "s+$file_in_log++g" ~/.journal
@@ -81,51 +85,51 @@ function modification
 				echo "$fichier2" >> ~/.journal
 			fi
 	 	done
+	
 	fi
 }
 
 
 
-echo "entrer le nom du premier dossier a syncro"
+echo "Entrer le nom du premier dossier a syncro"
 read DossA
-echo "entrer le nom du deuxieme dossier a syncro"
+echo "Entrer le nom du deuxieme dossier a syncro"
 read DossB
-pathA=`find ~ -type d -name $DossA` #voir pour les chemins
+pathA=`find ~ -type d -name $DossA` #créer les path vers les fichiers
 pathB=`find ~ -type d -name $DossB`
 
 while [[ -z $pathA ]]; do
-	echo "le premier dossier n'as pas été trouvé, merci de saisir a nouveau votre dossier"
+	echo "Le premier dossier n'as pas été trouvé, merci de saisir a nouveau votre dossier"
 	read DossA
 	pathA=`find ~ -type d -name $DossA`
 done
-echo " premier dossier trouvé"
+echo " Premier dossier trouvé"
 
 while [[ -z $pathB ]]; do
-	echo "le deuxieme dossier n'as pas été trouvé, merci de saisir a nouveau votre dossier"
+	echo "Le deuxieme dossier n'as pas été trouvé, merci de saisir a nouveau votre dossier"
 	read DossB
 	pathB=`find ~ -type d -name $DossB`
 done
-echo " deuxieme dossier trouvé"
-#path$1, nom arbre explorer, path arbre explorer, path autre arbre
+echo " Deuxieme dossier trouvé"
 
 if [[ ! -e ~/.journal ]]; then
-	echo -e "aucun journal de synchronisation trouvé, choissisez  quel dossier synchroniser \n1 pour le premier dossier\n2 pour le deuxieme dossier"
+	echo -e "Aucun journal de synchronisation trouvé, choissisez  quel dossier synchroniser \n1 pour le premier dossier\n2 pour le deuxieme dossier"
 	read choix
 	if [[ $choix = 1 ]]; then
-		rm -rf $DossB
+		rm -rf $DossB # suppresion et copie/colle
 		cp -pr $DossA $DossB
-		touch ~/.journal
-		echo -e "$(ls -lR $DossA  | grep ^- | tr -d " ")\n" >> ~/.journal
+		touch ~/.journal #creation du journal
+		echo -e "$(ls -lR $DossA  | grep ^- | tr -d " ")\n" >> ~/.journal #copie les méta données de DossA dans le journal
 		echo "Mise a niveau des dossiers et création du journal de synchronisation"
 	else 
 		rm -rf $DossA
 		cp -pr $DossB $DossA
 		touch ~/.journal
-		echo -e "$(ls -lR $DossB  | grep ^- | tr -d " ")\n" >> ~/.journal
+		echo -e "$(ls -lR $DossB  | grep ^- | tr -d " ")\n" >> ~/.journal #pareil
 		echo "Mise a niveau des dossiers et création du journal de synchronisation"
 	fi
 else
-	echo "le journal existe deja"
+	echo "Le journal existe deja"
 	parcourir $pathA $pathA $pathB 
 	parcourir $pathB $pathB $pathA 
 fi
