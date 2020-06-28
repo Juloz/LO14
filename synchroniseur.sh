@@ -8,24 +8,10 @@ function parcourir {
 		done
 		cd ..
 	else  #si c'est un fichier, on envoi a a la fonction modification
-		#comparaison $1
-		#if [[ "$?" = "1" ]]; then
 			modification $1 $2 $3
-		#fi
 	fi
 }
 
-function comparaison #inutile
-{
-	fichier1=`ls -l $1 | grep $1`
-	file_in_log=`grep $1 ~/.journal`
-	if [[ "$fichier1" = "$file_in_log"  ]]; then	
-		return 0
-	else 	
-		return 1
-	fi
-
-}
 
 function modification
 {
@@ -35,16 +21,7 @@ function modification
 	fichier2=`ls -l $file2 | grep $1  | sed "s~$file2~$1~" | tr -d " "` 
 	file_in_log=`grep $1 ~/.journal` 
 	choix='0'
-	echo "1 : $1"
-	echo "2 : $2"
-	echo "file1 : $file1"
-	echo "file2 : $file2"
-	echo "fichier1 : $fichier1"
-	echo "fichier2 : $fichier2"
-	echo "file_in_log : $file_in_log"
 	if [ "$fichier1" =  "$fichier2" ] && [ "$fichier1" = "$file_in_log" ]; then 
-		toto="0"
-		echo "toto"
 	elif [[ "$fichier2" = '' ]]; then                        #le fichier n'existe pas dans le second arbre
 	 	if [[ "$fichier1" = "$file_in_log" ]]; then			#le fichier est déja dans les logs, et de manière identique, c'est donc qu'il a été supprimer dans l'autre arbre, il faut donc le supprimer
 	 		rm -f $file1
